@@ -27,7 +27,7 @@ setup(
         "Topic :: Database :: Front-Ends",
         "Operating System :: OS Independent",
     ],
-    packages=find_packages(include=["sqlalchemy_jdbcapi"]),
+    #packages=find_packages(include=["sqlalchemy_jdbcapi"]),
     include_package_data=True,
     install_requires=["SQLAlchemy", "JayDeBeApi"],
     zip_safe=False,
