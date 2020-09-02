@@ -18,9 +18,13 @@ class PGJDBCDialect(BaseDialect, PGDialect):
     jdbc_driver_name = "org.postgresql.Driver"
     colspecs = colspecs
 
-    def __init__(self, *args, **kwargs):
-        super(PGJDBCDialect, self).__init__(*args, **kwargs)
-        self.jdbc_driver_path = os.environ.get("PG_JDBC_DRIVER_PATH")
+    def __init__(self,driver_path=None,**kwargs):
+        super(PGJDBCDialect, self).__init__(**kwargs)
+        print("driver_path={}".format(driver_path))
+        if driver_path is not None:
+            self.jdbc_driver_path = driver_path
+        else:
+            self.jdbc_driver_path = os.environ.get("PG_JDBC_DRIVER_PATH")
         #self.isolation_level=isolation_level
 
         if self.jdbc_driver_path is None:
