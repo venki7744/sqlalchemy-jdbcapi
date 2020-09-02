@@ -21,6 +21,46 @@ class BaseDialect(object):
     supports_unicode_binds = True
     description_encoding = None
 
+    # def __init__(
+    #     self,
+    #     **kwargs
+    # ):
+    #     #default.DefaultDialect.__init__(self, **kwargs)
+        #self.isolation_level = isolation_level
+    
+    def set_isolation_level(self, connection, level):
+        if level is not None:
+            level = level.replace("_", " ")
+
+        # adjust for ConnectionFairy possibly being present
+        if hasattr(connection, "connection"):
+            connection = connection.connection
+
+        if level == "AUTOCOMMIT":
+            connection.jconn.setAutoCommit(True)
+        else:
+            connection.jconn.setAutoCommit(False)
+
+    def on_connect(self):
+
+        #print('InsideOnConnect,isolationLevel-{}'.format(self.isolation_level))
+
+        fns=[]
+        #if self.isolation_level is not None:
+        def on_connect(conn):
+                self.set_isolation_level(conn,self.isolation_level)
+        fns.append(on_connect)
+        
+        if fns:
+
+            def on_connect(conn):
+                for fn in fns:
+                    fn(conn)
+
+            return on_connect
+        else:
+            return None
+
     @classmethod
     def dbapi(cls):
         import jaydebeapi
